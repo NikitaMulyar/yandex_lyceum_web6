@@ -2,6 +2,7 @@ import requests
 import sys
 from PIL import Image
 from io import BytesIO
+from dist import lonlat_distance
 
 
 search_api_server = "https://search-maps.yandex.ru/v1/"
@@ -52,3 +53,8 @@ response = requests.get(map_api_server, params=map_params)
 
 Image.open(BytesIO(
     response.content)).show()
+print('=============================')
+print(f'АДРЕС АПТЕКИ: {org_address}')
+print(f'ВРЕМЯ РАБОТЫ: {organization["properties"]["CompanyMetaData"]["Hours"]["text"]}')
+print(f'РАССТОЯНИЕ ОТ ТОЧКИ А: {lonlat_distance(tuple(map(float, address_ll.split(","))), tuple(map(float, org_point.split(",")))) / 1000}км')
+print('=============================')
