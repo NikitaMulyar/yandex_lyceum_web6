@@ -9,7 +9,11 @@ def main():
     search_api_server = "https://search-maps.yandex.ru/v1/"
     api_key = "dda3ddba-c9ea-4ead-9010-f43fbc15c6e3"
 
-    address_ll = sys.argv[1]
+    crs = sys.argv[1:]
+    if type(crs) == str:
+        address_ll = crs
+    else:
+        address_ll = ",".join([i.strip(',') for i in crs])
 
     search_params = {
         "apikey": api_key,
@@ -22,6 +26,7 @@ def main():
     response = requests.get(search_api_server, params=search_params)
     if not response:
         print('Аптек поблизости не найдено')
+        print(response.reason)
         return
 
     json_response = response.json()
@@ -49,7 +54,7 @@ def main():
     print('=============================')
     print(f'АДРЕС АПТЕКИ: {org_address}')
     print(f'ВРЕМЯ РАБОТЫ: {organization["properties"]["CompanyMetaData"]["Hours"]["text"]}')
-    print(f'РАССТОЯНИЕ ОТ ТОЧКИ А: {lonlat_distance(tuple(map(float, address_ll.split(","))), tuple(map(float, org_point.split(",")))) / 1000}км')
+    print(f'РАССТОЯНИЕ ОТ ТОЧКИ А: {round(lonlat_distance(tuple(map(float, address_ll.split(","))), tuple(map(float, org_point.split(",")))) / 1000, 3)}км')
     print('=============================')
 
 
