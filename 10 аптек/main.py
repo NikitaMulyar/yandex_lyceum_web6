@@ -4,10 +4,20 @@ from PIL import Image
 from io import BytesIO
 
 
+def coords_of_address(address):
+    try:
+        res = requests.get(f'https://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={address}&format=json')
+        i = ','.join(res.json()['response']['GeoObjectCollection']['featureMember'][0]['GeoObject'][
+            'Point']['pos'].split())
+        return i
+    except Exception:
+        return None
+
+
 def main():
     search_api_server = "https://search-maps.yandex.ru/v1/"
     api_key = "dda3ddba-c9ea-4ead-9010-f43fbc15c6e3"
-    address_ll = sys.argv[1]
+    address_ll = coords_of_address(sys.argv[1:])
     search_params = {
         "apikey": api_key,
         "text": "аптека",
